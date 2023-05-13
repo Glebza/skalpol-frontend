@@ -1,0 +1,33 @@
+.element {
+    user-select: none;
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.element-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.element-icon {
+    width: 3em;
+    height: 3em;
+}
+
+.element-icon.selected {
+    background-image: url("../Util/icons/rectangle.png");
+    background-size: contain;
+}
+
+.element-title {
+    font-size: 12px;
+    text-align: center;
+}

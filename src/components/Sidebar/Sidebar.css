@@ -1,0 +1,36 @@
+.sidebar {
+    grid-row-start: 2;
+    grid-column-start: 1;
+    align-items: center;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-right: 1px solid #dee2e6;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+
+button {
+    border: none;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition-duration: 0.4s;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+button + button {
+    margin-top: 10px;
+}
+
+.element-list {
+    display: flex;
+    flex-direction: column;
+}

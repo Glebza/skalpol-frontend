@@ -1,0 +1,31 @@
+@media (max-width: 2500px){
+    .container{
+        max-width:2200px;
+    }
+
+}
+
+@media (max-width: 1024px){
+    .container{
+        max-width:1024px;
+    }
+
+}
+@media (max-width: 500px){
+    .container{
+        max-width:500px;
+    }
+
+}
+
+
+.container {
+    display: grid;
+    height: calc(100vh - 60px);
+    grid-template-columns:  20% 80%;
+    grid-template-rows: 10% 90%;
+
+}
+
+
+

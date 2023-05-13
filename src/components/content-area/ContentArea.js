@@ -72,9 +72,7 @@ export default class ContentArea extends Component {
     }
 
     onContentClick = (e) => {
-        console.log('on content click');
-        console.log(e);
-        console.log(e.currentTarget);
+
         // if the click event is directly on the content, not on a child element
         if (e.target === e.currentTarget) {
             this.props.onContentClick(); // call the provided callback
@@ -90,6 +88,7 @@ export default class ContentArea extends Component {
             handleTitleChange,
             onDragOver,
             onElementClick,
+            onElementDetailsChanged,
             onDrop,
             onElementDrop,
             onElementDragStart,
@@ -104,7 +103,9 @@ export default class ContentArea extends Component {
                                                onDragOver={onDragOver}
                                                onElementClick={onElementClick}
                                                onElementDrop={onElementDrop}
-                                               onElementDragStart={onElementDragStart}/> : null;
+                                               onElementDragStart={onElementDragStart}
+                                               onElementDetailsChanged={onElementDetailsChanged}
+        /> : null;
 
 
         return (
@@ -127,7 +128,7 @@ export default class ContentArea extends Component {
 }
 
 
-const DiagramView = ({diagram, onElementDragStart, onElementClick, onDragOver, handleTitleChange}) => {
+const DiagramView = ({diagram, onElementDragStart, onElementClick,onElementDetailsChanged, onDragOver, handleTitleChange}) => {
     const {elements, diagramTitle} = diagram;
     return (<React.Fragment>
         <h3>{diagramTitle}</h3>
@@ -145,6 +146,7 @@ const DiagramView = ({diagram, onElementDragStart, onElementClick, onDragOver, h
                 onElementClick={() => onElementClick(element.id)}
                 onDragOver={onDragOver}
                 onTitleChange={handleTitleChange}
+                onElementDetailsChanged={onElementDetailsChanged}
 
 
             />))

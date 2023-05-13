@@ -1,45 +1,54 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Modal from 'react-modal';
 
-// Make sure to bind modal to your appElement (http://reactcommunity.org/react-modal/accessibility/)
-Modal.setAppElement('#root');
+Modal.setAppElement('#root'); // replace this with the id of your app root element
 
-function DataSourceDetails() {
-    const [modalIsOpen,setIsOpen] = useState(false);
-    function openModal() {
-        setIsOpen(true);
+class DataSourceDetails extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            tables: [],
+            joinType: '',
+            table1Field: '',
+            table2Field: '',
+            joins: [],
+        };
     }
 
-    function afterOpenModal() {
-        // references are now sync'd and can be accessed.
-        subtitle.style.color = '#f00';
+
+    closeModalAndSave = () => {
+        this.props.onClose(this.state);
     }
 
-    function closeModal(){
-        setIsOpen(false);
+    handleAddJoin = () => {
+        this.setState(prevState => ({
+            joins: prevState.joins.concat({
+                joinType: prevState.joinType,
+                table1Field: prevState.table1Field,
+                table2Field: prevState.table2Field,
+            }),
+            joinType: '',
+            table1Field: '',
+            table2Field: '',
+        }));
     }
 
-    let subtitle;
+    render() {
 
-    return (
-        <div>
-            <button onClick={openModal}>Open Modal</button>
-            <Modal
-                isOpen={modalIsOpen}
-                onAfterOpen={afterOpenModal}
-                onRequestClose={closeModal}
-                contentLabel="Example Modal"
-            >
-                <h2 ref={_subtitle => (subtitle = _subtitle)}>Hello</h2>
-                <button onClick={closeModal}>close</button>
-                <div>I am a modal</div>
-                <form>
-                    <input />
-                    <button>Submit</button>
-                </form>
-            </Modal>
-        </div>
-    );
+        const {showModal} = this.props;
+
+        return (
+                <Modal
+                    isOpen={showModal}
+                    onRequestClose={this.closeModalAndSave}
+                    contentLabel="Data Source Modal"
+                >
+                    <h2>Configure Data Source</h2>
+                    {/* Your form fields go here */}
+                    <button onClick={this.closeModalAndSave}>Close</button>
+                </Modal>
+        );
+    }
 }
 
 export default DataSourceDetails;

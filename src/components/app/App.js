@@ -3,8 +3,7 @@ import './App.css';
 import Sidebar from '../Sidebar';
 import Header from '../header';
 import ContentArea from "../content-area";
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-
+import {BrowserRouter as Router} from 'react-router-dom';
 
 
 class App extends Component {
@@ -107,7 +106,13 @@ class App extends Component {
 
     };
 
-
+    handleElementDetailsChange = (id,details) => {
+        this.setState((prevState) => ({
+            elements: prevState.diagram.elements.map((element) =>
+                element.id === id ? {...element, details:{...details}} : element
+            ),
+        }));
+    }
 
     handleTitleChange = (id, newTitle) => {
         this.setState((prevState) => ({
@@ -133,7 +138,7 @@ class App extends Component {
 
 
     onElementClick = (id) => {
-        console.log('element clicked');
+        console.log(`element with id ${id} clicked`);
         this.setState(({diagram, connections, drawingMode}) => {
             const {elements} = diagram;
             const selectedElementIndex = elements.findIndex(el => el.isSelected);
@@ -182,8 +187,7 @@ class App extends Component {
         });
         const oldItem = array[idx];
         const newItem = {...oldItem, [field]: !oldItem[field]};
-        const newArray = [...array.slice(0, idx), newItem, ...array.slice(idx + 1)];
-        return newArray;
+        return [...array.slice(0, idx), newItem, ...array.slice(idx + 1)];
     }
 
 
@@ -204,6 +208,7 @@ class App extends Component {
                         onDrop={this.onDrop}
                         onElementDragStart={this.onElementDragStart}
                         onDiagramLoaded={this.onDiagramLoaded}
+                        onElementDetailsChanged = {this.handleElementDetailsChange}
                         onError={this.onError}
                         diagram={diagram}
                         connections={connections}

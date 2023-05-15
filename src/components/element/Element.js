@@ -50,7 +50,6 @@ class Element extends Component {
         switch (e.detail) {
             case 1: {
                 this.props.onElementClick();
-                console.log('single click');
                 break;
             }
             case 2: {
@@ -64,15 +63,35 @@ class Element extends Component {
 
     }
 
+    choseDetailWindow = (element) => {
+        let elementWindow = null;
+        const elementType = element.elementType;
+        console.log(`el type =  ${elementType} and show = ${this.state.showModal}`);
+        switch (elementType) {
+            case "dataSource": {
+                console.log('data source');
+                elementWindow = (<DataSourceDetails onClose={this.handleCloseButton}
+                                              isOpen={this.state.showModal}
+                                              element={element}
+                />);
+                break;
+            }
+            case "filter": {
+                break;
+            }
+            default: {
+                break;
+            }
+        }
+        return elementWindow;
+    }
+
 
     render() {
-        const {title, position, elementType, isSelected,} = this.props;
-        const {showModal} = this.state;
+        const {element} = this.props;
+        const {key, id,title,position,width,height,elementType,isSelected} = element;
         const ElementIcon = ElementIcons[elementType];
-
-
-        const modal = showModal ? <DataSourceDetails onClose={this.handleCloseButton}
-                                                     isOpen={showModal}/> : null;
+        const modal = this.choseDetailWindow(element);
 
         return (
             <div
@@ -83,8 +102,7 @@ class Element extends Component {
                 onDragOver={this.onDragOver}
                 onClick={this.onClick}
             >
-                <DataSourceDetails onClose={this.handleCloseButton}
-                                   showModal={showModal}/>
+                {modal}
                 <div className='element-content'>
                     <img className={`element-icon ${isSelected ? 'selected' : ''}`}
                          src={ElementIcon} alt={`${elementType} icon`}/>

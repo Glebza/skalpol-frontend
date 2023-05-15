@@ -10,9 +10,9 @@ class Sidebar extends Component {
         };
     }
 
-    sbElements = [{'elementType': 'getData', 'title': 'Source'},
+    sbElements = [{'elementType': 'dataSource', 'title': 'Source'},
         {'elementType': 'filterData', 'title': 'Filter'},
-        {'elementType': 'start', 'title': 'Start'},
+        {'elementType': 'startPoint', 'title': 'Start'},
         {'elementType':'ifCondition','title': 'If'}];
 
     onDragStart = (e, elementType) => {

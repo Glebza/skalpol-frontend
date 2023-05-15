@@ -8,33 +8,26 @@ import * as d3 from 'd3';
 
 export default class ContentArea extends Component {
 
-
     diagramService = new DiagramService();
 
     componentDidMount() {
-
         this.getDiagram(1);
     }
-
 
     getDiagram = (id) => {
         this.diagramService.getDiagram(id).then(this.props.onDiagramLoaded).catch(this.props.onError);
     }
 
-
     componentDidUpdate(prevProps, prevState, snapshot) {
         console.log('Content area did update');
-        const {contentRef,diagram,connections} = this.props;
+        const {contentRef, diagram} = this.props;
         // Remove the previous connection lines if they exist
         d3.select(contentRef.current).select('svg.connections').remove();
-
         // Draw the new connection lines
-        this.drawConnectionLine(diagram.elements, contentRef,connections);
+        this.drawConnectionLine( contentRef,diagram.elements, diagram.connections);
     }
 
-
-    drawConnectionLine = (elements, contentRef,connections) => {
-
+    drawConnectionLine = (contentRef,elements, connections) => {
         // Set up a d3 container for the connection lines
         const svg = d3.select(contentRef.current)
             .append('svg')
@@ -42,25 +35,22 @@ export default class ContentArea extends Component {
             .attr('height', contentRef.current.clientHeight)
             .attr('class', 'connections');
 
-        // For each pair of elements, draw a line connecting them
-
-       if (connections){
-           connections.forEach((connection) => {
-               console.log(connection);
-               const source = this.extractElementById(elements, connection.source);
-               const target = this.extractElementById(elements, connection.target);
-
-               svg.append('line')
-                   .attr('x1', source.position.x +23)
-                   .attr('y1', source.position.y + 45 )
-                   .attr('x2', target.position.x + 23)
-                   .attr('y2', target.position.y )
-                   .attr('stroke', '#17A2B8')
-                   .attr('stroke-width', 2);
+        if (connections) {
+            connections.forEach((connection) => {
+                console.log(connection);
+                const source = this.extractElementById(elements, connection.source);
+                const target = this.extractElementById(elements, connection.target);
+                svg.append('line')
+                    .attr('x1', source.position.x + 23)
+                    .attr('y1', source.position.y + 45)
+                    .attr('x2', target.position.x + 23)
+                    .attr('y2', target.position.y)
+                    .attr('stroke', '#17A2B8')
+                    .attr('stroke-width', 2);
 
 
-           });
-       }
+            });
+        }
 
     };
 
@@ -72,7 +62,6 @@ export default class ContentArea extends Component {
     }
 
     onContentClick = (e) => {
-
         // if the click event is directly on the content, not on a child element
         if (e.target === e.currentTarget) {
             this.props.onContentClick(); // call the provided callback
@@ -82,17 +71,9 @@ export default class ContentArea extends Component {
 
     render() {
         const {
-            diagram,
-            loading,
-            error,
-            handleTitleChange,
-            onDragOver,
-            onElementClick,
-            onElementDetailsChanged,
-            onDrop,
-            onElementDrop,
-            onElementDragStart,
-            contentRef
+            diagram, loading, error, contentRef,
+            handleTitleChange, onDragOver, onElementClick, onElementDetailsChanged,
+            onDrop, onElementDrop, onElementDragStart,
         } = this.props;
 
         const hasData = !(loading || error);
@@ -104,13 +85,10 @@ export default class ContentArea extends Component {
                                                onElementClick={onElementClick}
                                                onElementDrop={onElementDrop}
                                                onElementDragStart={onElementDragStart}
-                                               onElementDetailsChanged={onElementDetailsChanged}
-        /> : null;
-
+                                               onElementDetailsChanged={onElementDetailsChanged}/> : null;
 
         return (
-            <div className="content-area"
-                 >
+            <div className="content-area">
                 <div
                     className="content"
                     onDrop={onDrop}
@@ -128,27 +106,26 @@ export default class ContentArea extends Component {
 }
 
 
-const DiagramView = ({diagram, onElementDragStart, onElementClick,onElementDetailsChanged, onDragOver, handleTitleChange}) => {
+const DiagramView = ({
+                         diagram,
+                         onElementDragStart,
+                         onElementClick,
+                         onElementDetailsChanged,
+                         onDragOver,
+                         handleTitleChange
+                     }) => {
     const {elements, diagramTitle} = diagram;
+
     return (<React.Fragment>
         <h3>{diagramTitle}</h3>
         {elements.map((element) => (
             <Element
-                key={element.id}
-                id={element.id}
-                title={element.title}
-                position={element.position}
-                width={element.width}
-                height={element.height}
-                elementType={element.elementType}
-                isSelected={element.isSelected}
+                element={element}
                 onElementDragStart={onElementDragStart}
                 onElementClick={() => onElementClick(element.id)}
                 onDragOver={onDragOver}
                 onTitleChange={handleTitleChange}
                 onElementDetailsChanged={onElementDetailsChanged}
-
-
             />))
         }
     </React.Fragment>)

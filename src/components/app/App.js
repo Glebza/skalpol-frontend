@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import './App.css';
-import Sidebar from '../Sidebar';
+import Sidebar from '../sidebar';
 import Header from '../header';
 import ContentArea from "../content-area";
 import {BrowserRouter as Router} from 'react-router-dom';
@@ -26,38 +26,32 @@ class App extends Component {
 
 
 
-    // componentDidUpdate(prevProps, prevState, snapshot) {
-    //
-    //     console.log(`state before update = ${JSON.stringify(prevState)}`);
-    //     console.log(`state after update = ${JSON.stringify(this.state)}`);
-    // }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+
+        console.log(`state before update = ${JSON.stringify(prevState)}`);
+        console.log(`state after update = ${JSON.stringify(this.state)}`);
+    }
 
 
     onDiagramLoaded = (diagram) => {
-        console.log('loading data');
         this.setState({diagram, loading: false})
     }
 
     onError = () => {
         this.setState({error: true, loading: false});
-
     }
 
     onElementDragStart = (e, params) => {
-
         const {title, id, offsetX, offsetY} = params;
         e.dataTransfer.setData("text/plain", JSON.stringify({title, id, offsetX, offsetY}));
-
     };
 
     onDragOver = (e) => {
-        console.log(`onDragOver`)
         e.preventDefault();
     };
 
 
     onDrop = (e) => {
-        console.log('onDrop')
         e.preventDefault();
         const json = {...JSON.parse(e.dataTransfer.getData('text/plain'))};
 
@@ -75,7 +69,6 @@ class App extends Component {
         const relativeX = xPos -  offsetX;
         const relativeY = yPos - offsetY;
 
-
         if (idx !== -1) {
             const oldItem = this.state.diagram.elements[idx];
 
@@ -88,7 +81,6 @@ class App extends Component {
 
             });
         } else {
-            console.log(`new item with title ${title}`)
             this.setState(({diagram}) => {
                 const {elements} = diagram;
                 const newItem = {
@@ -102,8 +94,6 @@ class App extends Component {
                 return {diagram: newDiagram};
             });
         }
-
-
     };
 
     handleElementDetailsChange = (id,details) => {
@@ -136,11 +126,9 @@ class App extends Component {
         });
     }
 
-
     onElementClick = (id) => {
-        console.log(`element with id ${id} clicked`);
-        this.setState(({diagram, connections, drawingMode}) => {
-            const {elements} = diagram;
+        this.setState(({diagram, drawingMode}) => {
+            const {elements,connections} = diagram;
             const selectedElementIndex = elements.findIndex(el => el.isSelected);
             const clickedElementIndex = elements.findIndex(el => el.id === id);
 
@@ -164,8 +152,7 @@ class App extends Component {
 
                 const newElements = this.toggleProperty(elements, id, 'isSelected');
                 return {
-                    diagram: {...diagram, elements: newElements},
-                    connections: newConnections,
+                    diagram: {...diagram,connections: newConnections, elements: newElements},
                     drawingMode: false
                 };
             } else {
@@ -180,21 +167,15 @@ class App extends Component {
         });
     };
 
-
     toggleProperty(array, id, field) {
-        const idx = array.findIndex((el) => {
-            return el.id === id
-        });
+        const idx = array.findIndex(el => el.id === id);
         const oldItem = array[idx];
         const newItem = {...oldItem, [field]: !oldItem[field]};
         return [...array.slice(0, idx), newItem, ...array.slice(idx + 1)];
     }
 
-
     render() {
-        const {diagram,connections, loading, error} = this.state;
-
-
+        const {diagram, loading, error} = this.state;
         return (
             <Router>
                 <div className="container">
@@ -211,11 +192,9 @@ class App extends Component {
                         onElementDetailsChanged = {this.handleElementDetailsChange}
                         onError={this.onError}
                         diagram={diagram}
-                        connections={connections}
                         loading={loading}
                         error={error}
                         contentRef={this.contentRef}
-
 
                     />
                 </div>
@@ -224,5 +203,4 @@ class App extends Component {
         );
     }
 }
-
 export default App;

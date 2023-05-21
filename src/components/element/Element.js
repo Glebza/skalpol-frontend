@@ -9,18 +9,16 @@ class Element extends Component {
         showModal: false,
     };
     onDragStart = (e) => {
-        const {title, id} = this.props;
-        const rect = e.target.getBoundingClientRect();
 
-        e.dataTransfer.setData('text/plain', JSON.stringify({title, id}));
+        const {title, id,} = this.props.element;
+
+        console.log(`element ${title} ${id} drag start `);
+        const rect = e.target.getBoundingClientRect();
         e.dataTransfer.effectAllowed = 'move';
         const offsetX = e.clientX - rect.left;
         const offsetY = e.clientY - rect.top;
-        if (offsetY < 10 && offsetX < 10) {
-            this.props.onConnectDragStart(e, {id: this.props.id, offsetX, offsetY});
-        } else {
-            this.props.onElementDragStart(e, {title: this.props.title, id: this.props.id, offsetX, offsetY});
-        }
+        e.dataTransfer.setData("text/plain", JSON.stringify({title, id, offsetX, offsetY}));
+        //onElementDragStart(e, {title: title, id: id, offsetX, offsetY});
 
     };
 
@@ -30,9 +28,11 @@ class Element extends Component {
     };
 
     handleCloseButton = (details) => {
+
         this.setState({showModal: false});
-        const {id} = this.props;
-        this.props.onElementDetailsChanged(id, details);
+        const {element, onElementDetailsChanged} = this.props;
+        console.log(element.id);
+        onElementDetailsChanged(element.id, details);
 
     }
 
@@ -71,8 +71,8 @@ class Element extends Component {
             case "dataSource": {
                 console.log('data source');
                 elementWindow = (<DataSourceDetails onClose={this.handleCloseButton}
-                                              isOpen={this.state.showModal}
-                                              element={element}
+                                                    isOpen={this.state.showModal}
+                                                    element={element}
                 />);
                 break;
             }
@@ -89,7 +89,7 @@ class Element extends Component {
 
     render() {
         const {element} = this.props;
-        const {key, id,title,position,width,height,elementType,isSelected} = element;
+        const {title, position, elementType, isSelected} = element;
         const ElementIcon = ElementIcons[elementType];
         const modal = this.choseDetailWindow(element);
 

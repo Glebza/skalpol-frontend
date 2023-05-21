@@ -84,7 +84,6 @@ export default class ContentArea extends Component {
                                                onDragOver={onDragOver}
                                                onElementClick={onElementClick}
                                                onElementDrop={onElementDrop}
-                                               onElementDragStart={onElementDragStart}
                                                onElementDetailsChanged={onElementDetailsChanged}/> : null;
 
         return (
@@ -108,7 +107,6 @@ export default class ContentArea extends Component {
 
 const DiagramView = ({
                          diagram,
-                         onElementDragStart,
                          onElementClick,
                          onElementDetailsChanged,
                          onDragOver,
@@ -121,7 +119,6 @@ const DiagramView = ({
         {elements.map((element) => (
             <Element
                 element={element}
-                onElementDragStart={onElementDragStart}
                 onElementClick={() => onElementClick(element.id)}
                 onDragOver={onDragOver}
                 onTitleChange={handleTitleChange}

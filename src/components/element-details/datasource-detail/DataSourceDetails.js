@@ -25,19 +25,12 @@ class DataSourceDetails extends React.Component {
             }
         ],
         joinTypes: ['inner', 'left', 'right'],
-        dataConnections: [{
-            tableFrom: 'Clients',
-            tableTo: 'ClientsServices',
-            joinsType: 'inner',
-            fields: [{from: 'id', to: 'client_id'}]
-        }],
+        dataConnections: [],
         currentConnection: ''
     }
 
-    closeModalAndSave = (onClose, element) => {
-        const dataConnections = this.state.dataConnections;
-        const newElement = {...element, dataConnections};
-        onClose(newElement);
+    closeModalAndSave = (onClose, dataConnections) => {
+        onClose(dataConnections);
     }
     handleSelectChange = (e, field) => {
         this.setState({
@@ -68,8 +61,8 @@ class DataSourceDetails extends React.Component {
         const {tables, joinTypes, dataConnections, currentConnection} = this.state;
 
         return (
-            <Modal isOpen={isOpen} toggle={() => this.closeModalAndSave(onClose, element)} size="xl">
-                <ModalHeader toggle={() => this.closeModalAndSave(onClose, element)}>
+            <Modal isOpen={isOpen} toggle={() => this.closeModalAndSave(onClose, dataConnections)} size="xl">
+                <ModalHeader toggle={() => this.closeModalAndSave(onClose, dataConnections)}>
                     Configure {element.title}
                 </ModalHeader>
                 <ModalBody>
@@ -211,13 +204,13 @@ class DataSourceDetails extends React.Component {
                     <ul>
                         {dataConnections.map((connection, index) => (
                             <li key={index}>
-                                {connection.tableFrom} ({connection.joinType} join) {connection.tableTo}
+                                {connection.tableFrom} ({connection.joinType} join) {connection.tableTo} on {connection.fieldFrom}  {connection.fieldTo}
                             </li>
                         ))}
                     </ul>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="secondary" onClick={() => this.closeModalAndSave(onClose, element)}>
+                    <Button color="secondary" onClick={() => this.closeModalAndSave(onClose, dataConnections)}>
                         Close
                     </Button>
                 </ModalFooter>

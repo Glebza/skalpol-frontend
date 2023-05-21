@@ -25,7 +25,6 @@ class App extends Component {
     }
 
 
-
     componentDidUpdate(prevProps, prevState, snapshot) {
 
         console.log(`state before update = ${JSON.stringify(prevState)}`);
@@ -54,7 +53,7 @@ class App extends Component {
     onDrop = (e) => {
         e.preventDefault();
         const json = {...JSON.parse(e.dataTransfer.getData('text/plain'))};
-
+        console.log({json})
         const title = json.title;
         const elementId = json.id;
         const offsetX = json.offsetX;
@@ -66,11 +65,12 @@ class App extends Component {
             return el.id === elementId
         });
 
-        const relativeX = xPos -  offsetX;
+        const relativeX = xPos - offsetX;
         const relativeY = yPos - offsetY;
 
         if (idx !== -1) {
             const oldItem = this.state.diagram.elements[idx];
+            console.log({...oldItem});
 
             this.setState(({diagram}) => {
                 const {elements} = diagram;
@@ -96,12 +96,20 @@ class App extends Component {
         }
     };
 
-    handleElementDetailsChange = (id,details) => {
-        this.setState((prevState) => ({
-            elements: prevState.diagram.elements.map((element) =>
-                element.id === id ? {...element, details:{...details}} : element
-            ),
-        }));
+    handleElementDetailsChange = (element_id, details) => {
+
+
+        this.setState(({diagram}) => {
+            const elements = diagram.elements;
+            const idx = elements.findIndex(el => el.id === element_id);
+            const oldItem = elements[idx];
+            console.log({...details});
+            const newItem = {...oldItem, details};
+            const newElements = [...elements.slice(0, idx), newItem, ...elements.slice(idx + 1)]
+            return {diagram: {...diagram, elements: newElements}};
+
+
+        });
     }
 
     handleTitleChange = (id, newTitle) => {
@@ -128,7 +136,7 @@ class App extends Component {
 
     onElementClick = (id) => {
         this.setState(({diagram, drawingMode}) => {
-            const {elements,connections} = diagram;
+            const {elements, connections} = diagram;
             const selectedElementIndex = elements.findIndex(el => el.isSelected);
             const clickedElementIndex = elements.findIndex(el => el.id === id);
 
@@ -143,16 +151,16 @@ class App extends Component {
             } else if (drawingMode && selectedElementIndex !== -1 && clickedElementIndex !== selectedElementIndex) {
                 // An element is selected, we're in drawing mode, and a different element was clicked
                 // Create a new connection and exit drawing mode
-                let  newConnections;
-                if (connections){
-                    newConnections  = [...connections, {source: elements[selectedElementIndex].id, target: id}];
-                 }else{
+                let newConnections;
+                if (connections) {
+                    newConnections = [...connections, {source: elements[selectedElementIndex].id, target: id}];
+                } else {
                     newConnections = [{source: elements[selectedElementIndex].id, target: id}];
                 }
 
                 const newElements = this.toggleProperty(elements, id, 'isSelected');
                 return {
-                    diagram: {...diagram,connections: newConnections, elements: newElements},
+                    diagram: {...diagram, connections: newConnections, elements: newElements},
                     drawingMode: false
                 };
             } else {
@@ -189,7 +197,7 @@ class App extends Component {
                         onDrop={this.onDrop}
                         onElementDragStart={this.onElementDragStart}
                         onDiagramLoaded={this.onDiagramLoaded}
-                        onElementDetailsChanged = {this.handleElementDetailsChange}
+                        onElementDetailsChanged={this.handleElementDetailsChange}
                         onError={this.onError}
                         diagram={diagram}
                         loading={loading}
@@ -203,4 +211,5 @@ class App extends Component {
         );
     }
 }
+
 export default App;
